@@ -302,6 +302,8 @@ export default function Landing() {
         </div>
       </section>
 
+      <DonationSection />
+
       <MarketingFooter />
     </div>
   );
