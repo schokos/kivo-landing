@@ -20,6 +20,7 @@ import ProposalDetail from "./pages/ProposalDetail";
 import ClientDetail from "./pages/ClientDetail";
 import Settings from "./pages/Settings";
 import PublicProposal from "./pages/PublicProposal";
+import Pricing from "./pages/Pricing";
 import Impressum from "./pages/legal/Impressum";
 import AGB from "./pages/legal/AGB";
 import Datenschutz from "./pages/legal/Datenschutz";
