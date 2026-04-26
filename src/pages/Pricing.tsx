@@ -102,17 +102,20 @@ export default function Pricing() {
     setDialogOpen(true);
   };
 
+  useEffect(() => {
+    document.title = "Preise — Kivolearn";
+    const desc = "Wähle deinen Kivolearn-Tarif: Starter (kostenlos), Pro, Max oder Familie. Faire Preise, jederzeit kündbar.";
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "description");
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", desc);
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Helmet>
-        <title>Preise — Kivolearn</title>
-        <meta
-          name="description"
-          content="Wähle deinen Kivolearn-Tarif: Starter (kostenlos), Pro, Max oder Familie. Faire Preise, jederzeit kündbar."
-        />
-        <link rel="canonical" href="/pricing" />
-      </Helmet>
-
       <MarketingHeader />
 
       <main className="flex-1">
