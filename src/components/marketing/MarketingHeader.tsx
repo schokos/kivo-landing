@@ -17,15 +17,15 @@ export function MarketingHeader() {
           </span>
         </Link>
         <nav className="hidden items-center gap-6 md:flex">
-          <a href="#features" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          <a href="/#features" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             Funktionen
           </a>
-          <a href="#how" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          <a href="/#how" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             So funktioniert's
           </a>
-          <a href="#preview" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-            Vorschau
-          </a>
+          <Link to="/pricing" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+            Preise
+          </Link>
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
           <Button variant="ghost" size="sm" onClick={() => navigate("/login")}>

@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
+import { DonationSection } from "@/components/marketing/DonationSection";
 
 const features = [
   {
@@ -300,6 +301,8 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      <DonationSection />
 
       <MarketingFooter />
     </div>
