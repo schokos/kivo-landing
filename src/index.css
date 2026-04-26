@@ -6,27 +6,27 @@
 
 @layer base {
   :root {
-    /* Kivolearn — warm grey + sage green */
-    --background: 100 15% 97%;
-    --foreground: 150 15% 12%;
+    /* Kivolearn — dark grey + sage green */
+    --background: 150 8% 94%;
+    --foreground: 150 15% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 150 15% 12%;
+    --card-foreground: 150 15% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 150 15% 12%;
+    --popover-foreground: 150 15% 10%;
 
-    --primary: 150 22% 38%;
-    --primary-foreground: 100 15% 97%;
+    --primary: 155 18% 26%;
+    --primary-foreground: 150 8% 96%;
 
-    --secondary: 120 10% 94%;
-    --secondary-foreground: 150 15% 12%;
+    --secondary: 150 6% 88%;
+    --secondary-foreground: 150 15% 10%;
 
-    --muted: 120 8% 93%;
-    --muted-foreground: 150 8% 40%;
+    --muted: 150 6% 90%;
+    --muted-foreground: 150 8% 35%;
 
-    --accent: 150 25% 92%;
-    --accent-foreground: 150 22% 28%;
+    --accent: 155 15% 85%;
+    --accent-foreground: 155 18% 22%;
 
     --destructive: 0 62% 48%;
     --destructive-foreground: 0 0% 100%;
