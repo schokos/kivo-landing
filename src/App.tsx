@@ -52,6 +52,7 @@ const App = () => (
             <Route path="/proposals/:id/edit" element={<ProtectedRoute><ProposalBuilder /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="/p/:shareId" element={<PublicProposal />} />
+            <Route path="/pricing" element={<Pricing />} />
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/agb" element={<AGB />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
