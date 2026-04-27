@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const { user, role } = useAuth();
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [allProposals, setAllProposals] = useState<Proposal[]>([]);
@@ -75,15 +77,15 @@ export default function Dashboard() {
   }, [allProposals]);
 
   const chartConfig = {
-    created: { label: "Created", color: "hsl(var(--primary))" },
-    accepted: { label: "Accepted", color: "hsl(var(--success, 142 71% 45%))" },
+    created: { label: t("dashboard.statTotal"), color: "hsl(var(--primary))" },
+    accepted: { label: t("dashboard.statAccepted"), color: "hsl(var(--success, 142 71% 45%))" },
   };
 
   const statCards = [
-    { label: "Total Proposals", value: stats.total, icon: FileText, color: "text-primary" },
-    { label: "Pending", value: stats.pending, icon: Clock, color: "text-warning" },
-    { label: "Accepted", value: stats.accepted, icon: Users, color: "text-success" },
-    { label: "Revenue", value: `$${stats.revenue.toLocaleString()}`, icon: DollarSign, color: "text-primary" },
+    { label: t("dashboard.statTotal"), value: stats.total, icon: FileText, color: "text-primary" },
+    { label: t("dashboard.statPending"), value: stats.pending, icon: Clock, color: "text-warning" },
+    { label: t("dashboard.statAccepted"), value: stats.accepted, icon: Users, color: "text-success" },
+    { label: t("dashboard.statRevenue"), value: `$${stats.revenue.toLocaleString()}`, icon: DollarSign, color: "text-primary" },
   ];
 
   return (
@@ -91,13 +93,13 @@ export default function Dashboard() {
       <div className="space-y-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="font-display text-2xl font-bold text-foreground">Dashboard</h1>
+            <h1 className="font-display text-2xl font-bold text-foreground">{t("dashboard.title")}</h1>
             <p className="text-sm text-muted-foreground">
-              {role === "admin" ? "Organization-wide overview" : "Your proposals and activity"}
+              {role === "admin" ? t("dashboard.subAdmin") : t("dashboard.subAgent")}
             </p>
           </div>
           <Button asChild className="gap-2 w-full sm:w-auto">
-            <Link to="/proposals/new"><PlusCircle className="h-4 w-4" /> New Proposal</Link>
+            <Link to="/proposals/new"><PlusCircle className="h-4 w-4" /> {t("nav.newProposal")}</Link>
           </Button>
         </div>
 
@@ -120,7 +122,7 @@ export default function Dashboard() {
         {/* Charts */}
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
-            <CardHeader><CardTitle className="font-display text-lg">Proposals (6 months)</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="font-display text-lg">{t("dashboard.chartProposals")}</CardTitle></CardHeader>
             <CardContent>
               <ChartContainer config={chartConfig} className="h-[220px] w-full">
                 <BarChart data={chartData}>
@@ -135,7 +137,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
           <Card>
-            <CardHeader><CardTitle className="font-display text-lg">Conversion Trend</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="font-display text-lg">{t("dashboard.chartConversion")}</CardTitle></CardHeader>
             <CardContent>
               <ChartContainer config={chartConfig} className="h-[220px] w-full">
                 <AreaChart data={chartData.map(d => ({ ...d, rate: d.created > 0 ? Math.round((d.accepted / d.created) * 100) : 0 }))}>
@@ -152,9 +154,9 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-4">
-            <CardTitle className="font-display text-lg">Recent Proposals</CardTitle>
+            <CardTitle className="font-display text-lg">{t("dashboard.recent")}</CardTitle>
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/proposals" className="gap-1">View all <ArrowRight className="h-3 w-3" /></Link>
+              <Link to="/proposals" className="gap-1">{t("dashboard.viewAll")} <ArrowRight className="h-3 w-3" /></Link>
             </Button>
           </CardHeader>
           <CardContent>
@@ -167,9 +169,9 @@ export default function Dashboard() {
             ) : proposals.length === 0 ? (
               <div className="py-12 text-center">
                 <FileText className="mx-auto h-10 w-10 text-muted-foreground/50" />
-                <p className="mt-2 text-sm text-muted-foreground">No proposals yet</p>
+                <p className="mt-2 text-sm text-muted-foreground">{t("dashboard.none")}</p>
                 <Button size="sm" className="mt-4 gap-2" asChild>
-                  <Link to="/proposals/new"><PlusCircle className="h-4 w-4" /> Create your first proposal</Link>
+                  <Link to="/proposals/new"><PlusCircle className="h-4 w-4" /> {t("dashboard.createFirst")}</Link>
                 </Button>
               </div>
             ) : (
@@ -185,7 +187,7 @@ export default function Dashboard() {
                       <div className="min-w-0">
                         <p className="font-medium text-sm text-card-foreground truncate">{p.title}</p>
                         <p className="text-xs text-muted-foreground">
-                          {p.clients?.name ?? "No client"} · {format(new Date(p.created_at), "MMM d, yyyy")}
+                          {p.clients?.name ?? t("dashboard.noClient")} · {format(new Date(p.created_at), "MMM d, yyyy")}
                         </p>
                       </div>
                     </div>
