@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,20 +8,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { FileText, LayoutDashboard, Users, FolderOpen, PlusCircle, Settings, LogOut, User, ClipboardList, Menu } from "lucide-react";
+import { LanguageToggle } from "@/components/marketing/LanguageToggle";
+import { ThemeToggle } from "@/components/marketing/ThemeToggle";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/proposals", icon: ClipboardList, label: "Proposals" },
-  { to: "/clients", icon: Users, label: "Clients" },
-  { to: "/templates", icon: FolderOpen, label: "Templates" },
-];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
   const { user, signOut, organization } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navItems = [
+    { to: "/dashboard", icon: LayoutDashboard, label: t("nav.dashboard") },
+    { to: "/proposals", icon: ClipboardList, label: t("nav.proposals") },
+    { to: "/clients", icon: Users, label: t("nav.clients") },
+    { to: "/templates", icon: FolderOpen, label: t("nav.templates") },
+  ];
 
   const handleSignOut = async () => {
     await signOut();
