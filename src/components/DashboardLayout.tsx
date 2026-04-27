@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,20 +8,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { FileText, LayoutDashboard, Users, FolderOpen, PlusCircle, Settings, LogOut, User, ClipboardList, Menu } from "lucide-react";
+import { LanguageToggle } from "@/components/marketing/LanguageToggle";
+import { ThemeToggle } from "@/components/marketing/ThemeToggle";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/proposals", icon: ClipboardList, label: "Proposals" },
-  { to: "/clients", icon: Users, label: "Clients" },
-  { to: "/templates", icon: FolderOpen, label: "Templates" },
-];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
   const { user, signOut, organization } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navItems = [
+    { to: "/dashboard", icon: LayoutDashboard, label: t("nav.dashboard") },
+    { to: "/proposals", icon: ClipboardList, label: t("nav.proposals") },
+    { to: "/clients", icon: Users, label: t("nav.clients") },
+    { to: "/templates", icon: FolderOpen, label: t("nav.templates") },
+  ];
 
   const handleSignOut = async () => {
     await signOut();
@@ -67,8 +71,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
-          <div className="flex items-center gap-3">
-
+          <div className="flex items-center gap-1 sm:gap-2">
+            <LanguageToggle />
+            <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
@@ -79,11 +84,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <div className="px-2 py-1.5 text-xs text-muted-foreground truncate">{user?.email}</div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate("/settings")}>
-                  <Settings className="mr-2 h-4 w-4" /> Settings
+                  <Settings className="mr-2 h-4 w-4" /> {t("nav.settings")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" /> Sign out
+                  <LogOut className="mr-2 h-4 w-4" /> {t("nav.signOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -122,11 +127,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <div className="my-2 border-t border-border" />
             <Button className="w-full justify-start gap-3 h-12" onClick={() => { setMobileOpen(false); navigate("/proposals/new"); }}>
               <PlusCircle className="h-5 w-5" />
-              New Proposal
+              {t("nav.newProposal")}
             </Button>
             <Button variant="ghost" className="w-full justify-start gap-3 h-12" onClick={() => { setMobileOpen(false); navigate("/settings"); }}>
               <Settings className="h-5 w-5" />
-              Settings
+              {t("nav.settings")}
             </Button>
           </nav>
         </SheetContent>

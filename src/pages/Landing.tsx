@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   BookOpen,
@@ -19,73 +20,31 @@ import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { DonationSection } from "@/components/marketing/DonationSection";
 
-const features = [
-  {
-    icon: BookOpen,
-    title: "Interaktive Kurse",
-    description:
-      "Lerne mit Inhalten, die mitdenken — Quizze, Übungen und sofortiges Feedback in jedem Schritt.",
-  },
-  {
-    icon: Sparkles,
-    title: "KI-Lernassistent",
-    description:
-      "Frag deinen persönlichen Coach alles, wann immer du willst. Erklärungen in deinem Tempo.",
-  },
-  {
-    icon: BarChart3,
-    title: "Fortschritt im Blick",
-    description:
-      "Sieh genau, wo du stehst, was du als Nächstes lernen solltest und was schon sitzt.",
-  },
-  {
-    icon: Trophy,
-    title: "Streaks & Ziele",
-    description:
-      "Bleib motiviert mit täglichen Lernzielen, Belohnungen und einer Lernroutine, die hält.",
-  },
-  {
-    icon: Users,
-    title: "Lern-Community",
-    description:
-      "Tausch dich mit anderen Lernenden aus, stell Fragen und feiere gemeinsam Erfolge.",
-  },
-  {
-    icon: Zap,
-    title: "Überall verfügbar",
-    description:
-      "Web heute, Handy bald — dein Lernfortschritt synchronisiert sich nahtlos auf allen Geräten.",
-  },
-];
-
-const steps = [
-  {
-    icon: Compass,
-    num: "01",
-    title: "Entdecken",
-    description: "Wähl ein Thema, das dich begeistert, und finde Kurse, die zu dir passen.",
-  },
-  {
-    icon: BookOpen,
-    num: "02",
-    title: "Lernen",
-    description: "Arbeite dich in deinem Tempo durch Lektionen, Übungen und kleine Challenges.",
-  },
-  {
-    icon: Rocket,
-    num: "03",
-    title: "Wachsen",
-    description: "Sammle Erfolge, vertiefe dein Wissen und werde jeden Tag ein Stück besser.",
-  },
-];
-
 export default function Landing() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!loading && user) navigate("/dashboard", { replace: true });
   }, [user, loading, navigate]);
+
+  const features = [
+    { icon: BookOpen, title: t("landing.features.coursesTitle"), description: t("landing.features.coursesDesc") },
+    { icon: Sparkles, title: t("landing.features.aiTitle"), description: t("landing.features.aiDesc") },
+    { icon: BarChart3, title: t("landing.features.progressTitle"), description: t("landing.features.progressDesc") },
+    { icon: Trophy, title: t("landing.features.streaksTitle"), description: t("landing.features.streaksDesc") },
+    { icon: Users, title: t("landing.features.communityTitle"), description: t("landing.features.communityDesc") },
+    { icon: Zap, title: t("landing.features.anywhereTitle"), description: t("landing.features.anywhereDesc") },
+  ];
+
+  const steps = [
+    { icon: Compass, num: "01", title: t("landing.steps.discoverTitle"), description: t("landing.steps.discoverDesc") },
+    { icon: BookOpen, num: "02", title: t("landing.steps.learnTitle"), description: t("landing.steps.learnDesc") },
+    { icon: Rocket, num: "03", title: t("landing.steps.growTitle"), description: t("landing.steps.growDesc") },
+  ];
+
+  const valueItems = t("landing.valueItems", { returnObjects: true }) as string[];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -93,44 +52,34 @@ export default function Landing() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div
-          className="absolute inset-0"
-          style={{ background: "var(--gradient-hero)" }}
-        />
+        <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 pb-20 pt-20 sm:pt-28">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm text-muted-foreground shadow-sm">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
-              Bald verfügbar — sei von Anfang an dabei
+              {t("landing.badge")}
             </div>
             <h1 className="font-display text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Lernen, das wirklich{" "}
+              {t("landing.heroTitle1")}{" "}
               <span className="bg-clip-text text-transparent" style={{ backgroundImage: "var(--gradient-primary)" }}>
-                hängen bleibt
+                {t("landing.heroTitleHighlight")}
               </span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-              Kivolearn ist die Lernplattform für neugierige Köpfe. Interaktive Kurse,
-              persönliche Coaches und eine Community, die dich weiterbringt.
+              {t("landing.heroDesc")}
             </p>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Button
-                size="lg"
-                className="h-12 px-8 text-base w-full sm:w-auto shadow-soft"
-                onClick={() => navigate("/signup")}
-              >
-                Kostenlos starten
+              <Button size="lg" className="h-12 px-8 text-base w-full sm:w-auto shadow-soft" onClick={() => navigate("/signup")}>
+                {t("landing.ctaStart")}
                 <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="h-12 px-8 text-base w-full sm:w-auto"
-                onClick={() => {
-                  document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
-                }}
+                onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
               >
-                Mehr erfahren
+                {t("landing.ctaLearnMore")}
               </Button>
             </div>
           </div>
@@ -142,7 +91,6 @@ export default function Landing() {
               style={{ boxShadow: "var(--shadow-soft), var(--shadow-glow)" }}
             >
               <div className="overflow-hidden rounded-xl bg-muted/50">
-                {/* Browser-style mock */}
                 <div className="flex items-center gap-1.5 border-b border-border bg-card/50 px-4 py-2.5">
                   <span className="h-2.5 w-2.5 rounded-full bg-destructive/60" />
                   <span className="h-2.5 w-2.5 rounded-full bg-warning/60" />
@@ -161,21 +109,15 @@ export default function Landing() {
                       </div>
                       <p className="font-display text-sm font-semibold text-foreground">{c.label}</p>
                       <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                        <div
-                          className="h-full rounded-full bg-primary"
-                          style={{ width: `${c.progress}%` }}
-                        />
+                        <div className="h-full rounded-full bg-primary" style={{ width: `${c.progress}%` }} />
                       </div>
-                      <p className="mt-2 text-xs text-muted-foreground">{c.progress}% abgeschlossen</p>
+                      <p className="mt-2 text-xs text-muted-foreground">{c.progress}%</p>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
-            <div
-              className="absolute -inset-4 -z-10 rounded-3xl blur-3xl"
-              style={{ background: "var(--gradient-primary)", opacity: 0.15 }}
-            />
+            <div className="absolute -inset-4 -z-10 rounded-3xl blur-3xl" style={{ background: "var(--gradient-primary)", opacity: 0.15 }} />
           </div>
         </div>
       </section>
@@ -184,19 +126,12 @@ export default function Landing() {
       <section id="features" className="py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
-              Warum Kivolearn?
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Alles, was du brauchst, um wirklich Fortschritte zu machen — an einem Ort.
-            </p>
+            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">{t("landing.featuresTitle")}</h2>
+            <p className="mt-4 text-lg text-muted-foreground">{t("landing.featuresDesc")}</p>
           </div>
           <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f) => (
-              <div
-                key={f.title}
-                className="group rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-soft"
-              >
+              <div key={f.title} className="group rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-soft">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-accent-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                   <f.icon className="h-5 w-5" />
                 </div>
@@ -212,12 +147,8 @@ export default function Landing() {
       <section id="how" className="bg-muted/40 py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
-              So funktioniert's
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
-              In drei Schritten von neugierig zu kompetent.
-            </p>
+            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">{t("landing.howTitle")}</h2>
+            <p className="mt-4 text-lg text-muted-foreground">{t("landing.howDesc")}</p>
           </div>
           <div className="mt-16 grid gap-8 sm:grid-cols-3">
             {steps.map((s) => (
@@ -240,21 +171,10 @@ export default function Landing() {
       <section className="py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
-              Lernen, das zu dir passt
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Keine starren Lehrpläne. Kein Druck. Nur du, dein Tempo und dein Weg.
-            </p>
+            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">{t("landing.valueTitle")}</h2>
+            <p className="mt-4 text-lg text-muted-foreground">{t("landing.valueDesc")}</p>
             <ul className="mt-10 grid gap-4 text-left sm:grid-cols-2">
-              {[
-                "In deinem eigenen Tempo lernen",
-                "Sofortiges Feedback bei jeder Übung",
-                "Persönlicher KI-Lernassistent",
-                "Tägliche Mini-Challenges",
-                "Lernfortschritt visualisiert",
-                "Bald als Handy-App verfügbar",
-              ].map((item) => (
+              {valueItems.map((item) => (
                 <li key={item} className="flex items-start gap-3 rounded-xl border border-border bg-card px-4 py-3">
                   <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                   <span className="text-sm font-medium text-foreground">{item}</span>
@@ -267,43 +187,26 @@ export default function Landing() {
 
       {/* Final CTA */}
       <section className="relative overflow-hidden py-24">
-        <div
-          className="absolute inset-0"
-          style={{ background: "var(--gradient-hero)" }}
-        />
+        <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
         <div className="relative mx-auto max-w-4xl px-6 text-center">
           <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-soft">
             <GraduationCap className="h-7 w-7 text-primary-foreground" />
           </div>
-          <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
-            Bereit, etwas Neues zu lernen?
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
-            Starte heute mit Kivolearn — kostenlos und ohne Verpflichtungen.
-          </p>
+          <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">{t("landing.finalTitle")}</h2>
+          <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">{t("landing.finalDesc")}</p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Button
-              size="lg"
-              className="h-12 px-8 text-base w-full sm:w-auto shadow-soft"
-              onClick={() => navigate("/signup")}
-            >
-              Jetzt loslegen
+            <Button size="lg" className="h-12 px-8 text-base w-full sm:w-auto shadow-soft" onClick={() => navigate("/signup")}>
+              {t("landing.finalCta")}
               <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-12 px-8 text-base w-full sm:w-auto"
-              onClick={() => navigate("/login")}
-            >
-              Anmelden
+            <Button size="lg" variant="outline" className="h-12 px-8 text-base w-full sm:w-auto" onClick={() => navigate("/login")}>
+              {t("landing.finalLogin")}
             </Button>
           </div>
         </div>
       </section>
 
       <DonationSection />
-
       <MarketingFooter />
     </div>
   );

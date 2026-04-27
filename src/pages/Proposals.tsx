@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,7 @@ type SortKey = "title" | "client" | "status" | "total" | "created_at" | "updated
 type SortDir = "asc" | "desc";
 
 export default function Proposals() {
+  const { t } = useTranslation();
   const { user, role } = useAuth();
   const navigate = useNavigate();
   const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -113,7 +115,7 @@ export default function Proposals() {
     if (error) {
       toast.error("Failed to delete: " + error.message);
     } else {
-      toast.success("Proposal deleted");
+      toast.success(t("proposals.deleted"));
       setProposals(proposals.filter(p => p.id !== deleteTarget.id));
     }
     setDeleting(false);
@@ -156,7 +158,7 @@ export default function Proposals() {
       );
     }
 
-    toast.success("Proposal duplicated");
+    toast.success(t("proposals.duplicated"));
     load();
   };
 
@@ -174,32 +176,32 @@ export default function Proposals() {
       <div className="space-y-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="font-display text-2xl font-bold text-foreground">Proposals</h1>
+            <h1 className="font-display text-2xl font-bold text-foreground">{t("proposals.title")}</h1>
             <p className="text-sm text-muted-foreground">
-              {role === "admin" ? "All organization proposals" : "Your proposals"}
+              {role === "admin" ? t("proposals.subAll") : t("proposals.subMine")}
             </p>
           </div>
           <Button asChild className="gap-2 w-full sm:w-auto">
-            <Link to="/proposals/new"><PlusCircle className="h-4 w-4" /> New Proposal</Link>
+            <Link to="/proposals/new"><PlusCircle className="h-4 w-4" /> {t("nav.newProposal")}</Link>
           </Button>
         </div>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative max-w-sm">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Search proposals..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <Input placeholder={t("proposals.searchPlaceholder")} className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-40">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-              <SelectItem value="sent">Sent</SelectItem>
-              <SelectItem value="viewed">Viewed</SelectItem>
-              <SelectItem value="accepted">Accepted</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
+              <SelectItem value="all">{t("proposals.allStatuses")}</SelectItem>
+              <SelectItem value="draft">{t("proposals.statusDraft")}</SelectItem>
+              <SelectItem value="sent">{t("proposals.statusSent")}</SelectItem>
+              <SelectItem value="viewed">{t("proposals.statusViewed")}</SelectItem>
+              <SelectItem value="accepted">{t("proposals.statusAccepted")}</SelectItem>
+              <SelectItem value="rejected">{t("proposals.statusRejected")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -213,10 +215,10 @@ export default function Proposals() {
             ) : sorted.length === 0 ? (
               <div className="py-16 text-center">
                 <FileText className="mx-auto h-10 w-10 text-muted-foreground/50" />
-                <p className="mt-2 text-sm text-muted-foreground">{search || statusFilter !== "all" ? "No matching proposals" : "No proposals yet"}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{search || statusFilter !== "all" ? t("proposals.noMatches") : t("proposals.none")}</p>
                 {!search && statusFilter === "all" && (
                   <Button size="sm" className="mt-4 gap-2" asChild>
-                    <Link to="/proposals/new"><PlusCircle className="h-4 w-4" /> Create your first proposal</Link>
+                    <Link to="/proposals/new"><PlusCircle className="h-4 w-4" /> {t("dashboard.createFirst")}</Link>
                   </Button>
                 )}
               </div>
@@ -224,12 +226,12 @@ export default function Proposals() {
               <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
-                    <SortableHead label="Title" sortKeyName="title" />
-                    <SortableHead label="Client" sortKeyName="client" />
-                    <SortableHead label="Status" sortKeyName="status" />
-                    <SortableHead label="Total" sortKeyName="total" className="text-right" />
-                    <SortableHead label="Created" sortKeyName="created_at" />
-                    <SortableHead label="Last Modified" sortKeyName="updated_at" />
+                    <SortableHead label={t("proposals.colTitle")} sortKeyName="title" />
+                    <SortableHead label={t("proposals.colClient")} sortKeyName="client" />
+                    <SortableHead label={t("proposals.colStatus")} sortKeyName="status" />
+                    <SortableHead label={t("proposals.colTotal")} sortKeyName="total" className="text-right" />
+                    <SortableHead label={t("proposals.colCreated")} sortKeyName="created_at" />
+                    <SortableHead label={t("proposals.colModified")} sortKeyName="updated_at" />
                     <TableHead className="w-10" />
                   </TableRow>
                 </TableHeader>
@@ -253,11 +255,11 @@ export default function Proposals() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
                             <DropdownMenuItem onClick={() => handleDuplicate(p)}>
-                              <Copy className="mr-2 h-4 w-4" /> Duplicate
+                              <Copy className="mr-2 h-4 w-4" /> {t("proposals.duplicate")}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem className="text-destructive" onClick={() => setDeleteTarget(p)}>
-                              <Trash2 className="mr-2 h-4 w-4" /> Delete
+                              <Trash2 className="mr-2 h-4 w-4" /> {t("common.delete")}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -275,15 +277,15 @@ export default function Proposals() {
       <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Proposal</DialogTitle>
+            <DialogTitle>{t("proposals.deleteTitle")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{deleteTarget?.title}"? This action cannot be undone.
+              {t("proposals.deleteDesc", { title: deleteTarget?.title })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>{t("common.cancel")}</Button>
             <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
-              {deleting ? "Deleting…" : "Delete Proposal"}
+              {deleting ? t("common.deleting") : t("proposals.deleteCta")}
             </Button>
           </DialogFooter>
         </DialogContent>

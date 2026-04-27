@@ -1,10 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageToggle } from "./LanguageToggle";
 
 export function MarketingHeader() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-lg">
@@ -19,22 +22,23 @@ export function MarketingHeader() {
         </Link>
         <nav className="hidden items-center gap-6 md:flex">
           <a href="/#features" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-            Funktionen
+            {t("nav.features")}
           </a>
           <a href="/#how" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-            So funktioniert's
+            {t("nav.how")}
           </a>
           <Link to="/pricing" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-            Preise
+            {t("nav.pricing")}
           </Link>
         </nav>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <LanguageToggle />
           <ThemeToggle />
           <Button variant="ghost" size="sm" onClick={() => navigate("/login")}>
-            Anmelden
+            {t("nav.login")}
           </Button>
           <Button size="sm" onClick={() => navigate("/signup")}>
-            Loslegen
+            {t("nav.signup")}
           </Button>
         </div>
       </div>
