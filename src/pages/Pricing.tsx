@@ -159,8 +159,8 @@ export default function Pricing() {
                 features={tier.features}
                 highlighted={tier.highlighted}
                 badge={tier.badge}
-                ctaLabel={tier.ctaLabel}
-                onCta={() => openWaitlist(tier.id)}
+                ctaLabel={loadingTier === tier.id ? "Lade…" : tier.ctaLabel}
+                onCta={() => handleCta(tier.id)}
               />
             ))}
           </div>
