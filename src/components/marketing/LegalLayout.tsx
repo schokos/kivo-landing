@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { MarketingHeader } from "./MarketingHeader";
 import { MarketingFooter } from "./MarketingFooter";
 
@@ -9,6 +10,9 @@ type LegalLayoutProps = {
 };
 
 export function LegalLayout({ title, lastUpdated, children }: LegalLayoutProps) {
+  const { i18n } = useTranslation();
+  const isDe = (i18n.resolvedLanguage || i18n.language || "en").startsWith("de");
+  const stand = isDe ? "Stand" : "Last updated";
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <MarketingHeader />
@@ -20,7 +24,7 @@ export function LegalLayout({ title, lastUpdated, children }: LegalLayoutProps) 
             </h1>
             {lastUpdated && (
               <p className="mt-2 text-sm text-muted-foreground">
-                Stand: {lastUpdated}
+                {stand}: {lastUpdated}
               </p>
             )}
           </header>
