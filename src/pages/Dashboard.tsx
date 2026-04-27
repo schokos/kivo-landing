@@ -11,6 +11,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { FileText, Users, DollarSign, Clock, PlusCircle, ArrowRight } from "lucide-react";
 import { format, subMonths, startOfMonth } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, AreaChart, Area, CartesianGrid } from "recharts";
+import { SubscriptionCard } from "@/components/SubscriptionCard";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 
 type Proposal = {
   id: string;
@@ -36,6 +39,15 @@ export default function Dashboard() {
   const [allProposals, setAllProposals] = useState<Proposal[]>([]);
   const [stats, setStats] = useState({ total: 0, pending: 0, accepted: 0, revenue: 0 });
   const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("subscription") === "success") {
+      toast.success("Abo erfolgreich aktiviert! 🎉");
+      searchParams.delete("subscription");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     if (!user) return;
@@ -102,6 +114,8 @@ export default function Dashboard() {
             <Link to="/proposals/new"><PlusCircle className="h-4 w-4" /> {t("nav.newProposal")}</Link>
           </Button>
         </div>
+
+        <SubscriptionCard />
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {statCards.map((s) => (

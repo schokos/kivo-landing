@@ -123,6 +123,48 @@ export type Database = {
           },
         ]
       }
+      donations: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          email: string | null
+          id: string
+          name: string | null
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          currency?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       line_items: {
         Row: {
           amount: number | null
@@ -436,6 +478,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          stripe_customer_id: string | null
+          subscribed: boolean
+          subscription_end: string | null
+          subscription_tier: string | null
+          trial_end: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          stripe_customer_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          trial_end?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          stripe_customer_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          trial_end?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       templates: {
         Row: {

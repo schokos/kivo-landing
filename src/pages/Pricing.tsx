@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { PricingTier } from "@/components/marketing/PricingTier";
-import { WaitlistDialog, type WaitlistTier } from "@/components/marketing/WaitlistDialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   Accordion,
   AccordionContent,
@@ -11,14 +14,39 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+type PaidTier = "pro" | "max" | "family";
+
 export default function Pricing() {
   const { t } = useTranslation();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedTier, setSelectedTier] = useState<WaitlistTier>("pro");
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
-  const openWaitlist = (tier: WaitlistTier) => {
-    setSelectedTier(tier);
-    setDialogOpen(true);
+  const startCheckout = async (tier: PaidTier) => {
+    if (!user) {
+      toast.info("Bitte melde dich an, um ein Abo zu starten.");
+      navigate(`/signup?redirect=/pricing`);
+      return;
+    }
+    setLoadingTier(tier);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { tier },
+      });
+      if (error) throw error;
+      if (data?.url) window.location.href = data.url;
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Checkout fehlgeschlagen");
+      setLoadingTier(null);
+    }
+  };
+
+  const handleCta = (tierId: string) => {
+    if (tierId === "starter") {
+      navigate(user ? "/dashboard" : "/signup");
+    } else {
+      startCheckout(tierId as PaidTier);
+    }
   };
 
   useEffect(() => {
@@ -131,8 +159,8 @@ export default function Pricing() {
                 features={tier.features}
                 highlighted={tier.highlighted}
                 badge={tier.badge}
-                ctaLabel={tier.ctaLabel}
-                onCta={() => openWaitlist(tier.id)}
+                ctaLabel={loadingTier === tier.id ? "Lade…" : tier.ctaLabel}
+                onCta={() => handleCta(tier.id)}
               />
             ))}
           </div>
@@ -159,8 +187,6 @@ export default function Pricing() {
       </main>
 
       <MarketingFooter />
-
-      <WaitlistDialog open={dialogOpen} onOpenChange={setDialogOpen} tier={selectedTier} />
     </div>
   );
 }

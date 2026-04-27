@@ -2,11 +2,17 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { WaitlistDialog } from "./WaitlistDialog";
+import { DonationDialog } from "./DonationDialog";
 
 export function DonationSection() {
   const [open, setOpen] = useState(false);
+  const [preset, setPreset] = useState<number | null>(null);
   const { t } = useTranslation();
+
+  const openWith = (amount: number | null) => {
+    setPreset(amount);
+    setOpen(true);
+  };
 
   return (
     <section id="support" className="border-t border-border bg-muted/40">
@@ -21,21 +27,21 @@ export function DonationSection() {
           {t("donation.desc")}
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Button size="lg" variant="outline" onClick={() => setOpen(true)}>
+          <Button size="lg" variant="outline" onClick={() => openWith(5)}>
             {t("donation.five")}
           </Button>
-          <Button size="lg" onClick={() => setOpen(true)}>
+          <Button size="lg" onClick={() => openWith(10)}>
             {t("donation.ten")}
           </Button>
-          <Button size="lg" variant="outline" onClick={() => setOpen(true)}>
+          <Button size="lg" variant="outline" onClick={() => openWith(null)}>
             {t("donation.custom")}
           </Button>
         </div>
         <p className="mt-4 text-xs text-muted-foreground">
-          {t("donation.soon")}
+          Sichere Bezahlung über Stripe.
         </p>
       </div>
-      <WaitlistDialog open={open} onOpenChange={setOpen} tier="donation" />
+      <DonationDialog open={open} onOpenChange={setOpen} presetAmount={preset} />
     </section>
   );
 }
