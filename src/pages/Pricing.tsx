@@ -187,8 +187,6 @@ export default function Pricing() {
       </main>
 
       <MarketingFooter />
-
-      <WaitlistDialog open={dialogOpen} onOpenChange={setDialogOpen} tier={selectedTier} />
     </div>
   );
 }
