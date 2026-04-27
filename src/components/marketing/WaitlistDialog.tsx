@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -16,29 +17,6 @@ import { Loader2, CheckCircle2 } from "lucide-react";
 
 export type WaitlistTier = "starter" | "pro" | "max" | "family" | "donation";
 
-const tierLabels: Record<WaitlistTier, string> = {
-  starter: "Starter",
-  pro: "Pro",
-  max: "Max",
-  family: "Familie",
-  donation: "Unterstützer",
-};
-
-const schema = z.object({
-  email: z
-    .string()
-    .trim()
-    .min(1, "E-Mail ist erforderlich")
-    .email("Ungültige E-Mail-Adresse")
-    .max(255, "E-Mail zu lang"),
-  name: z
-    .string()
-    .trim()
-    .max(100, "Name zu lang")
-    .optional()
-    .or(z.literal("")),
-});
-
 interface WaitlistDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -46,10 +24,30 @@ interface WaitlistDialogProps {
 }
 
 export function WaitlistDialog({ open, onOpenChange, tier }: WaitlistDialogProps) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+
+  const tierLabel = t(
+    `waitlist.tier${tier.charAt(0).toUpperCase() + tier.slice(1)}` as any
+  );
+
+  const schema = z.object({
+    email: z
+      .string()
+      .trim()
+      .min(1, t("waitlist.emailRequired"))
+      .email(t("waitlist.emailInvalid"))
+      .max(255, t("waitlist.emailTooLong")),
+    name: z
+      .string()
+      .trim()
+      .max(100, t("waitlist.nameTooLong"))
+      .optional()
+      .or(z.literal("")),
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,9 +67,9 @@ export function WaitlistDialog({ open, onOpenChange, tier }: WaitlistDialogProps
 
     if (error) {
       if (error.code === "23505") {
-        toast.error("Du bist für diesen Tarif bereits angemeldet.");
+        toast.error(t("waitlist.duplicate"));
       } else {
-        toast.error("Etwas ist schiefgelaufen. Bitte später erneut versuchen.");
+        toast.error(t("waitlist.error"));
       }
       return;
     }
@@ -82,9 +80,7 @@ export function WaitlistDialog({ open, onOpenChange, tier }: WaitlistDialogProps
   };
 
   const handleClose = (next: boolean) => {
-    if (!next) {
-      setDone(false);
-    }
+    if (!next) setDone(false);
     onOpenChange(next);
   };
 
@@ -94,25 +90,25 @@ export function WaitlistDialog({ open, onOpenChange, tier }: WaitlistDialogProps
         {done ? (
           <div className="flex flex-col items-center gap-3 py-6 text-center">
             <CheckCircle2 className="h-12 w-12 text-primary" />
-            <DialogTitle>Du bist auf der Warteliste!</DialogTitle>
+            <DialogTitle>{t("waitlist.successTitle")}</DialogTitle>
             <DialogDescription>
-              Wir melden uns, sobald <strong>{tierLabels[tier]}</strong> verfügbar ist.
+              {t("waitlist.successDesc", { tier: tierLabel })}
             </DialogDescription>
             <Button onClick={() => handleClose(false)} className="mt-2">
-              Schließen
+              {t("common.close")}
             </Button>
           </div>
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>Warteliste: {tierLabels[tier]}</DialogTitle>
+              <DialogTitle>{t("waitlist.titlePrefix")} {tierLabel}</DialogTitle>
               <DialogDescription>
-                Sei einer der Ersten, die Kivolearn {tierLabels[tier]} nutzen können.
+                {t("waitlist.desc", { tier: tierLabel })}
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="waitlist-email">E-Mail *</Label>
+                <Label htmlFor="waitlist-email">{t("waitlist.emailLabel")}</Label>
                 <Input
                   id="waitlist-email"
                   type="email"
@@ -120,26 +116,26 @@ export function WaitlistDialog({ open, onOpenChange, tier }: WaitlistDialogProps
                   maxLength={255}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="du@beispiel.de"
+                  placeholder={t("waitlist.emailPlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="waitlist-name">Name (optional)</Label>
+                <Label htmlFor="waitlist-name">{t("waitlist.nameLabel")}</Label>
                 <Input
                   id="waitlist-name"
                   type="text"
                   maxLength={100}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Dein Name"
+                  placeholder={t("waitlist.namePlaceholder")}
                 />
               </div>
               <Button type="submit" disabled={loading} className="w-full">
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Auf Warteliste setzen
+                {t("waitlist.submit")}
               </Button>
               <p className="text-center text-xs text-muted-foreground">
-                Wir nutzen deine E-Mail nur, um dich zu informieren.
+                {t("waitlist.note")}
               </p>
             </form>
           </>
