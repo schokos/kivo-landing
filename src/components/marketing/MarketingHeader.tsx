@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function MarketingHeader() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export function MarketingHeader() {
           </Link>
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
           <Button variant="ghost" size="sm" onClick={() => navigate("/login")}>
             Anmelden
           </Button>
