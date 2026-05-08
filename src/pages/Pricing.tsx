@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { PricingTier } from "@/components/marketing/PricingTier";
-import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { APP_SIGNUP_URL } from "@/lib/links";
 import {
   Accordion,
   AccordionContent,
@@ -14,39 +11,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-type PaidTier = "pro" | "max" | "family";
-
 export default function Pricing() {
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
-  const startCheckout = async (tier: PaidTier) => {
-    if (!user) {
-      toast.info("Bitte melde dich an, um ein Abo zu starten.");
-      navigate(`/signup?redirect=/pricing`);
-      return;
-    }
-    setLoadingTier(tier);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { tier },
-      });
-      if (error) throw error;
-      if (data?.url) window.location.href = data.url;
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Checkout fehlgeschlagen");
-      setLoadingTier(null);
-    }
-  };
-
-  const handleCta = (tierId: string) => {
-    if (tierId === "starter") {
-      navigate(user ? "/dashboard" : "/signup");
-    } else {
-      startCheckout(tierId as PaidTier);
-    }
+  // All plans send the user to the signup page of the separate kivo-app repo.
+  // Subscriptions are created and managed inside the actual application.
+  const handleCta = () => {
+    window.location.href = APP_SIGNUP_URL;
   };
 
   useEffect(() => {
@@ -159,8 +130,8 @@ export default function Pricing() {
                 features={tier.features}
                 highlighted={tier.highlighted}
                 badge={tier.badge}
-                ctaLabel={loadingTier === tier.id ? "Lade…" : tier.ctaLabel}
-                onCta={() => handleCta(tier.id)}
+                ctaLabel={tier.ctaLabel}
+                onCta={handleCta}
               />
             ))}
           </div>

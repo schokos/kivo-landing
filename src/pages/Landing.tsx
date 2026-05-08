@@ -1,7 +1,4 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "@/contexts/AuthContext";
 import {
   BookOpen,
   Sparkles,
@@ -19,15 +16,10 @@ import { Button } from "@/components/ui/button";
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { DonationSection } from "@/components/marketing/DonationSection";
+import { APP_LOGIN_URL, APP_SIGNUP_URL } from "@/lib/links";
 
 export default function Landing() {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (!loading && user) navigate("/dashboard", { replace: true });
-  }, [user, loading, navigate]);
 
   const features = [
     { icon: BookOpen, title: t("landing.features.coursesTitle"), description: t("landing.features.coursesDesc") },
@@ -69,9 +61,11 @@ export default function Landing() {
               {t("landing.heroDesc")}
             </p>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Button size="lg" className="h-12 px-8 text-base w-full sm:w-auto shadow-soft" onClick={() => navigate("/signup")}>
+              <Button size="lg" className="h-12 px-8 text-base w-full sm:w-auto shadow-soft" asChild>
+                <a href={APP_SIGNUP_URL}>
                 {t("landing.ctaStart")}
                 <ArrowRight className="ml-1 h-4 w-4" />
+                </a>
               </Button>
               <Button
                 size="lg"
@@ -195,12 +189,14 @@ export default function Landing() {
           <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">{t("landing.finalTitle")}</h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">{t("landing.finalDesc")}</p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Button size="lg" className="h-12 px-8 text-base w-full sm:w-auto shadow-soft" onClick={() => navigate("/signup")}>
-              {t("landing.finalCta")}
-              <ArrowRight className="ml-1 h-4 w-4" />
+            <Button size="lg" className="h-12 px-8 text-base w-full sm:w-auto shadow-soft" asChild>
+              <a href={APP_SIGNUP_URL}>
+                {t("landing.finalCta")}
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </a>
             </Button>
-            <Button size="lg" variant="outline" className="h-12 px-8 text-base w-full sm:w-auto" onClick={() => navigate("/login")}>
-              {t("landing.finalLogin")}
+            <Button size="lg" variant="outline" className="h-12 px-8 text-base w-full sm:w-auto" asChild>
+              <a href={APP_LOGIN_URL}>{t("landing.finalLogin")}</a>
             </Button>
           </div>
         </div>
