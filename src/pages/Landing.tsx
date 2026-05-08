@@ -1,7 +1,4 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "@/contexts/AuthContext";
 import {
   BookOpen,
   Sparkles,
@@ -19,15 +16,10 @@ import { Button } from "@/components/ui/button";
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { DonationSection } from "@/components/marketing/DonationSection";
+import { APP_LOGIN_URL, APP_SIGNUP_URL } from "@/lib/links";
 
 export default function Landing() {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (!loading && user) navigate("/dashboard", { replace: true });
-  }, [user, loading, navigate]);
 
   const features = [
     { icon: BookOpen, title: t("landing.features.coursesTitle"), description: t("landing.features.coursesDesc") },
