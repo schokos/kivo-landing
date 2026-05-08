@@ -1,12 +1,12 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
+import { APP_LOGIN_URL, APP_SIGNUP_URL } from "@/lib/links";
 
 export function MarketingHeader() {
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   return (
@@ -34,11 +34,11 @@ export function MarketingHeader() {
         <div className="flex items-center gap-1 sm:gap-2">
           <LanguageToggle />
           <ThemeToggle />
-          <Button variant="ghost" size="sm" onClick={() => navigate("/login")}>
-            {t("nav.login")}
+          <Button variant="ghost" size="sm" asChild>
+            <a href={APP_LOGIN_URL}>{t("nav.login")}</a>
           </Button>
-          <Button size="sm" onClick={() => navigate("/signup")}>
-            {t("nav.signup")}
+          <Button size="sm" asChild>
+            <a href={APP_SIGNUP_URL}>{t("nav.signup")}</a>
           </Button>
         </div>
       </div>
