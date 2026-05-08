@@ -1,85 +1,82 @@
-## Ziel
 
-Monetarisierung für Kivolearn vorbereiten: eine eigene **Pricing-Seite** mit 4 Stufen, eine **Warteliste** mit Datenbank-Anbindung und ein **Spenden-Bereich** im Footer. Noch keine echte Zahlung – aber alles so aufgebaut, dass wir später nahtlos auf Lovable Payments umstellen können.
+# Setup: Kivo Landing + Kivo App auf GitHub Pages
 
-Außerdem: Farb-Korrektur auf **dunkles Grau-Grün** (Kivo-Style).
+## Architektur
 
----
+```text
+GitHub Account
+├── kivo-landing  (Vanilla HTML/CSS/JS — baust du mit Claude)
+│   └── live unter:  https://<user>.github.io/kivo-landing/
+│       oder Custom Domain:  https://kivolearn.de
+│
+└── kivo-app      (dieses Lovable-Projekt, React/Vite)
+    └── live unter:  https://<user>.github.io/kivo-app/
+        oder Subdomain:  https://app.kivolearn.de
+```
 
-## Was gebaut wird
+Landing = nur Marketing (Hero, Features, Pricing-Anzeige, Footer).
+App = alles mit Login: Dashboard, Clients, Templates, Proposals, Settings, Stripe-Checkout, Spenden.
 
-### 1. Pricing-Seite (`/pricing`)
-Neue Route mit 4 Tarif-Karten:
+## Was in DIESEM Projekt geändert werden muss
 
-- **Starter** (Kostenlos) — Basis-Lerninhalte, begrenzte Kurse, Community-Zugang
-- **Pro** — Alle Kurse, Fortschritts-Tracking, Offline-Modus, Support
-- **Max** — Pro + KI-Lerncoach, Premium-Inhalte, Zertifikate, Priority-Support
-- **Familie** — Bis zu 5 Profile, Eltern-Dashboard, Kinder-Schutz, alle Max-Features
+Damit die Lovable-App als zweites GitHub-Pages-Repo unter einem Sub-Pfad läuft und alle Marketing-Routen auf die externe Landing zeigen.
 
-Jede Karte hat eine "Bald verfügbar – auf Warteliste" Schaltfläche statt echter Bezahlung. Die populärste Stufe (Pro) wird optisch hervorgehoben.
+### 1. Marketing-Routen aus der App entfernen
+Die App soll keine eigene Landing/Pricing/Legal mehr ausliefern — die liegen drüben im Vanilla-Repo.
 
-Zusätzlich: FAQ-Abschnitt unten (3–4 typische Fragen zu Abos, Kündigung, Gratisversion).
+- `src/App.tsx`: Routen `/`, `/pricing`, `/impressum`, `/agb`, `/datenschutz`, `/cookies` entfernen
+- Root `/` macht stattdessen einen Redirect:
+  - eingeloggt → `/dashboard`
+  - nicht eingeloggt → `window.location.href = "https://kivolearn.de"` (deine Landing-URL)
+- `MarketingHeader`, `MarketingFooter`, `Landing.tsx`, `Pricing.tsx`, `pages/legal/*`, `DonationSection`, `WaitlistDialog` löschen oder ungenutzt lassen
+- `CookieBanner` bleibt (gehört zur App)
 
-### 2. Warteliste-Formular
-Modal/Dialog, das beim Klick auf einen Tarif öffnet. Felder:
-- E-Mail (Pflicht, validiert)
-- Name (optional)
-- Gewünschter Tarif (vorausgewählt)
+### 2. Vite für GitHub-Pages-Subpfad konfigurieren
+`vite.config.ts`: `base: "/kivo-app/"` setzen (oder `"/"` falls du eine eigene Subdomain `app.kivolearn.de` nutzt — empfohlen).
 
-Speichert in eine neue `waitlist`-Tabelle. Erfolgsmeldung nach dem Absenden.
+### 3. React Router an base anpassen
+`<BrowserRouter basename="/kivo-app">` (entfällt bei eigener Subdomain).
 
-### 3. Spenden-Sektion
-Neuer Block ganz unten auf der Landing-Page (über dem Footer):
-- Kurzer Text "Unterstütze Kivolearn"
-- Drei Buttons: 5 €, 10 €, Eigener Betrag
-- Aktuell führen die Buttons zu einem "Bald verfügbar"-Hinweis. Die Buttons sind so vorbereitet, dass später Stripe-Checkout angedockt werden kann.
+### 4. SPA-Fallback für GitHub Pages
+GitHub Pages kennt keine SPA-Rewrites. Standard-Trick:
+- `public/404.html` anlegen, das per kleinem Script die URL umschreibt und auf `index.html` weiterleitet
+- Snippet in `index.html` ergänzt das wieder zurück
+(Standard "spa-github-pages"-Pattern, ~15 Zeilen)
 
-### 4. Navigation & Footer
-- "Preise" Link in `MarketingHeader`
-- "Preise" und "Unterstützen" Links in `MarketingFooter`
+### 5. GitHub Actions Workflow
+`.github/workflows/deploy.yml` anlegen:
+- Trigger: push auf `main`
+- `bun install` → `bun run build` → Deploy `dist/` nach `gh-pages` Branch
+- Standard-Action: `peaceiris/actions-gh-pages` oder `actions/deploy-pages`
 
-### 5. Farbkorrektur dunkleres Grau-Grün
-Anpassung in `src/index.css`:
-- Primär-Ton dunkler (z. B. `hsl(155 18% 28%)` statt `38%`)
-- Hintergrund-Töne kühler/dunkler im Grau
+### 6. Cross-Links setzen
+In der App:
+- Logout → `https://kivolearn.de`
+- "Pricing"-Link in der App-Sidebar (falls gewünscht) → `https://kivolearn.de/#pricing`
+- Login/Signup-Buttons der Landing zeigen drüben auf `https://app.kivolearn.de/login` bzw. `/signup`
 
----
+### 7. Stripe Success/Cancel URLs prüfen
+`create-checkout` und `create-donation` Edge Functions: `success_url` / `cancel_url` müssen auf die App-Domain zeigen, nicht auf die Landing.
 
-## Technische Details
+### 8. Supabase Auth Redirect URLs
+In Supabase Auth-Settings: `Site URL` und `Redirect URLs` auf die App-Domain (`https://app.kivolearn.de` bzw. die GitHub-Pages-URL) setzen. Sonst schlägt Email-Confirm/Password-Reset fehl.
 
-**Routing** (`src/App.tsx`)
-- Neue Route `/pricing` → neue Seite `src/pages/Pricing.tsx`
+## Empfehlung: Custom Subdomains statt Pfad-Hosting
 
-**Neue Komponenten**
-- `src/pages/Pricing.tsx` — die 4-Stufen-Seite mit FAQ
-- `src/components/marketing/PricingTier.tsx` — wiederverwendbare Tarif-Karte
-- `src/components/marketing/WaitlistDialog.tsx` — Modal mit zod-validiertem Formular
-- `src/components/marketing/DonationSection.tsx` — Block für die Landing
+Pfad-Hosting (`github.io/kivo-app/`) macht Routing, Cookies und Stripe-Redirects fummelig. **Mit zwei Subdomains** (`kivolearn.de` + `app.kivolearn.de`) entfallen die Punkte 2 + 3 komplett und alles funktioniert wie hier in der Preview. GitHub Pages unterstützt Custom Domains pro Repo via `CNAME`-Datei.
 
-**Datenbank** — neue Tabelle `waitlist_signups`:
-| Spalte | Typ |
-|---|---|
-| id | uuid PK |
-| email | text (validiert) |
-| name | text nullable |
-| tier | text (`starter`/`pro`/`max`/`family`) |
-| created_at | timestamptz |
+## Was ich in diesem Repo NICHT mache
 
-RLS:
-- INSERT: `public` darf einfügen (öffentliche Anmeldung)
-- SELECT: nur Admins (`has_role(auth.uid(), 'admin')`)
-- UPDATE/DELETE: keine
+- Vanilla-Landing-Code schreiben (machst du in `kivo-landing` mit Claude)
+- DNS/Domain-Setup (machst du bei deinem Registrar)
 
-Unique-Index auf `(email, tier)` damit niemand sich doppelt für denselben Tarif einträgt.
+## Reihenfolge der Umsetzung in diesem Projekt
 
-**Validierung** mit `zod` im Frontend, zusätzliche Längenbegrenzungen.
+1. Marketing-Routen + Komponenten entfernen
+2. Root-Redirect zu externer Landing einbauen
+3. Vite `base` + Router `basename` (nur falls Pfad-Hosting)
+4. `public/404.html` + Snippet in `index.html`
+5. `.github/workflows/deploy.yml`
+6. Stripe + Supabase Redirect-URLs anpassen
 
-**Style** — gleiche Tokens wie bestehende Marketing-Seiten (`bg-primary`, `text-foreground`, `MarketingHeader`/`MarketingFooter`).
-
----
-
-## Was NICHT in diesem Schritt enthalten ist
-
-- Echte Zahlungen (Stripe/Paddle) — separat sobald du soweit bist und Pro-Plan aktiv ist
-- Admin-Ansicht für die Warteliste — kommt mit dem Dashboard-Refresh
-- E-Mail-Bestätigung an Anmelder — kann später per Resend ergänzt werden
+Sag mir bitte vor dem Implementieren noch: **Subdomain (`app.kivolearn.de`) oder Pfad (`github.io/kivo-app/`)?** — davon hängen Schritt 2/3 ab.
