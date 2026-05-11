@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   BookOpen,
@@ -20,6 +22,17 @@ import { APP_LOGIN_URL, APP_SIGNUP_URL } from "@/lib/links";
 
 export default function Landing() {
   const { t } = useTranslation();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.slice(1);
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      }, 50);
+    }
+  }, [location.hash]);
+
 
   const features = [
     { icon: BookOpen, title: t("landing.features.coursesTitle"), description: t("landing.features.coursesDesc") },
