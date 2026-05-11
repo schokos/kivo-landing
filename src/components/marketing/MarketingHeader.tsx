@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,22 @@ import { APP_LOGIN_URL, APP_SIGNUP_URL } from "@/lib/links";
 
 export function MarketingHeader() {
   const { t } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const scrollToHash = (e: React.MouseEvent, hash: string) => {
+    e.preventDefault();
+    if (location.pathname !== "/") {
+      navigate("/#" + hash);
+      // Defer scroll until landing has rendered
+      setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else {
+      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+      history.replaceState(null, "", "#" + hash);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-lg">
