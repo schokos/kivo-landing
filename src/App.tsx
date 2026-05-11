@@ -5,13 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CookieBanner } from "@/components/marketing/CookieBanner";
 
-import Landing from "./pages/Landing";
-import Pricing from "./pages/Pricing";
+import ComingSoon from "./pages/ComingSoon";
 import Impressum from "./pages/legal/Impressum";
 import AGB from "./pages/legal/AGB";
 import Datenschutz from "./pages/legal/Datenschutz";
 import Cookies from "./pages/legal/Cookies";
-import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -26,13 +24,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter basename={basename}>
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/" element={<ComingSoon />} />
           <Route path="/impressum" element={<Impressum />} />
           <Route path="/agb" element={<AGB />} />
           <Route path="/datenschutz" element={<Datenschutz />} />
           <Route path="/cookies" element={<Cookies />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<ComingSoon />} />
         </Routes>
         <CookieBanner />
       </BrowserRouter>
