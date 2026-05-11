@@ -37,12 +37,12 @@ export function MarketingHeader() {
           </span>
         </Link>
         <nav className="hidden items-center gap-6 md:flex">
-          <Link to="/#features" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          <a href="/#features" onClick={(e) => scrollToHash(e, "features")} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             {t("nav.features")}
-          </Link>
-          <Link to="/#how" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          </a>
+          <a href="/#how" onClick={(e) => scrollToHash(e, "how")} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             {t("nav.how")}
-          </Link>
+          </a>
           <Link to="/pricing" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             {t("nav.pricing")}
           </Link>
