@@ -21,12 +21,12 @@ export function MarketingHeader() {
           </span>
         </Link>
         <nav className="hidden items-center gap-6 md:flex">
-          <a href="/#features" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          <Link to="/#features" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             {t("nav.features")}
-          </a>
-          <a href="/#how" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          </Link>
+          <Link to="/#how" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             {t("nav.how")}
-          </a>
+          </Link>
           <Link to="/pricing" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             {t("nav.pricing")}
           </Link>
