@@ -27,9 +27,9 @@ export function MarketingFooter() {
           <div>
             <h4 className="font-display text-sm font-semibold text-foreground">{t("footer.product")}</h4>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><a href="/#features" className="text-muted-foreground transition-colors hover:text-foreground">{t("nav.features")}</a></li>
+              <li><Link to="/#features" className="text-muted-foreground transition-colors hover:text-foreground">{t("nav.features")}</Link></li>
               <li><Link to="/pricing" className="text-muted-foreground transition-colors hover:text-foreground">{t("nav.pricing")}</Link></li>
-              <li><a href="/#support" className="text-muted-foreground transition-colors hover:text-foreground">{t("footer.productSupport")}</a></li>
+              <li><Link to="/#support" className="text-muted-foreground transition-colors hover:text-foreground">{t("footer.productSupport")}</Link></li>
             </ul>
           </div>
 
